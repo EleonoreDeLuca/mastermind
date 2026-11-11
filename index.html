@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#152d37">
+  <meta name="description" content="Quatre couleurs secrètes, dix essais. Un jeu de logique accessible, sans compte et sans service externe.">
+  <title>Code secret · Mastermind</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <span class="brand"><span class="brand-mark" aria-hidden="true">●<br>● ●</span>CODE SECRET</span>
+      <span class="edition">JEU DE LOGIQUE <span aria-hidden="true">/</span> v1.0.0</span>
+    </header>
+    <section class="intro" aria-labelledby="title">
+      <p class="eyebrow">QUATRE COULEURS. À VOUS DE JOUER.</p>
+      <h1 id="title">Décryptez<br>le <em>code secret.</em></h1>
+      <p class="lede">Un peu de déduction, une touche d’intuition.<br>Vous avez 10 essais pour trouver la combinaison.</p>
+    </section>
+    <div class="layout">
+      <section class="game-panel" aria-label="Votre partie">
+        <div class="panel-top"><span class="panel-label">LA COMBINAISON À TROUVER</span><span class="tag">4 PIONS · 6 COULEURS</span></div>
+        <div class="secret" aria-label="Quatre couleurs cachées"><span>?</span><span>?</span><span>?</span><span>?</span></div>
+        <div class="status-block">
+          <div class="status-heading"><h2 id="status-title">À vous de jouer</h2><span id="counter" class="counter">0 / 10 essais</span></div>
+          <p id="status-text">Sélectionnez un pion, puis sa couleur.</p>
+          <div class="progress" aria-hidden="true"><span id="progress-fill"></span></div>
+        </div>
+        <div class="composer">
+          <div class="composer-top"><h3 id="guess-title">Votre proposition</h3><span id="filled-count">0 sur 4</span></div>
+          <div id="slots" class="slots" role="group" aria-label="Les quatre pions de votre proposition"></div>
+          <p class="selection-help" id="selection-help">Pion 1 sélectionné · choisissez sa couleur</p>
+          <div id="palette" class="palette" role="group" aria-label="Choisir une couleur"></div>
+          <p id="feedback" class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
+          <button id="submit" class="primary" type="button">Valider la proposition <span aria-hidden="true">↗</span></button>
+          <p class="keyboard-hint">Clavier : ← → pour les pions · 1–6 pour les couleurs · Entrée pour valider</p>
+        </div>
+        <div class="panel-bottom"><span id="test-label" hidden>MODE TEST · API 0.2</span><button id="new-game" class="text-button" type="button">↻ Nouvelle partie</button></div>
+      </section>
+      <aside class="side">
+        <section class="history-panel" aria-labelledby="history-title">
+          <div class="history-heading"><h2 id="history-title">Vos essais</h2><span id="remaining">10 disponibles</span></div>
+          <div id="empty-history" class="empty-history"><span aria-hidden="true">◎</span><p>Le premier pas vers le secret.</p><small>Vos propositions et leurs indices<br>apparaîtront ici.</small></div>
+          <ol id="history" class="history" aria-label="Historique des propositions"></ol>
+          <div class="legend"><span><b>●</b> Bien placées</span><span><b>○</b> Mal placées</span></div>
+        </section>
+        <details class="rules" open>
+          <summary>Les règles, en quelques mots <span aria-hidden="true">+</span></summary>
+          <div class="rules-content">
+            <p>Trouvez les <strong>4 couleurs dans le bon ordre</strong> en 10 essais. Une couleur peut apparaître plusieurs fois.</p>
+            <p><strong>Bien placée :</strong> bonne couleur, bonne position.<br><strong>Mal placée :</strong> couleur présente, autre position.</p>
+            <p>Chaque occurrence compte une seule fois, en commençant par les positions exactes. Les nombres ne désignent aucun pion précis.</p>
+            <p>Vous pouvez modifier les quatre pions avant validation. Le code reste caché, même à la fin.</p>
+          </div>
+        </details>
+      </aside>
+    </div>
+    <footer><a href="Code-secret-Mastermind.html" download>Télécharger le jeu</a><span>Sans compte · Sans IA pendant la partie</span></footer>
+  </main>
+  <noscript>Activez JavaScript dans votre navigateur pour jouer à Code secret.</noscript>
+</body>
+</html>
