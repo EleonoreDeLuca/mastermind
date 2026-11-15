@@ -3,7 +3,7 @@
 Jeu solo réalisé avec Codex pour le séminaire sur les technologies émergentes, HEG-Genève. **Jeu v1.0.0**, créé le 11 novembre 2026 ; documentation complétée le **15 novembre 2026**.
 
 - [Dépôt GitHub](https://github.com/EleonoreDeLuca/mastermind) · [Télécharger le projet ZIP](https://github.com/EleonoreDeLuca/mastermind/archive/refs/heads/main.zip).
-- **Jeu en ligne : publication GitHub Pages encore à réaliser et à vérifier.** Le dépôt de code et le site jouable sont deux adresses différentes.
+- **[Jouer en ligne](https://eleonoredeluca.github.io/mastermind/)** · [Accès à l’API de test](https://eleonoredeluca.github.io/mastermind/?test=1). Publication GitHub Pages activée et vérifiée le **15 novembre 2026**. Le dépôt de code et le site jouable sont deux adresses différentes.
 - Pour jouer sur ordinateur : extraire le ZIP, puis ouvrir `Code-secret-Mastermind.html` dans un navigateur récent. Ce fichier autonome contient le jeu entier. `index.html` utilise les mêmes sources, réparties en plusieurs fichiers. Aucune installation ni ressource externe n’est requise pour jouer.
 
 ## 1. Règles et utilisation
@@ -60,8 +60,9 @@ Un `startGame` invalide rejette avec une `Error` portant `code` et `message`, sa
 | 11 novembre 2026 | [`9850caa`](https://github.com/EleonoreDeLuca/mastermind/commit/9850caaffa77da0a14e2da028c42f74fafda4035) | Jeu v1.0.0, API 0.2, fichier autonome, README et génération |
 | 11 novembre 2026 | [`32c5f35`](https://github.com/EleonoreDeLuca/mastermind/commit/32c5f35) | Page `tests/browser.html` |
 | 11 novembre 2026 | [`1f7124c`](https://github.com/EleonoreDeLuca/mastermind/commit/1f7124c4b49ab9e5f48f9d7ae821f42e1c8ac02a) | Scripts des tests du moteur et de l’intégration |
+| 15 novembre 2026 | [`8a1d0ee`](https://github.com/EleonoreDeLuca/mastermind/commit/8a1d0eefca0e22857ddc95cfcaf7c0cef2772af2) | Ajout d’AGENTS.md et documentation des versions, résultats et limites |
 
-Les vérifications du navigateur ci-dessous ont été réalisées **le 11 novembre, en local**, dans le navigateur intégré de ChatGPT sous Windows, sur les sources v1.0.0 ensuite enregistrées dans ces commits. Elles ont donné **18/18 contrôles réussis pour la page standard et pour la copie autonome**. Elles n’ont pas été réexécutées le 15 novembre. Les tests du moteur ont été relancés **le 15 novembre sur `1f7124c` : 8 groupes réussis, 0 échec**, avec Node.js sous Windows.
+Les vérifications du navigateur ci-dessous ont été réalisées **le 11 novembre, en local**, dans le navigateur intégré de ChatGPT sous Windows, sur les sources v1.0.0 ensuite enregistrées dans ces commits. Elles ont donné **18/18 contrôles réussis pour la page standard et pour la copie autonome**. Ces observations historiques sont conservées ; les nouvelles vérifications sur le site public du 15 novembre sont détaillées plus bas. Les tests du moteur ont été relancés **le 15 novembre sur `1f7124c` : 8 groupes réussis, 0 échec**, avec Node.js sous Windows.
 
 Dans le tableau : R = rouge, B = bleu, V = vert ; les appels emploient les noms complets.
 
@@ -84,11 +85,23 @@ Dans le tableau : R = rouge, B = bleu, V = vert ; les appels emploient les noms 
 
 **Mise à jour du 15 novembre :** ajout d’AGENTS.md et réorganisation du README pour conserver ces preuves et les étapes restantes. Le jeu n’est pas modifié. AGENTS.md n’existait pas lors de la création ni des premiers tests ; ses consignes s’appliquent aux travaux suivants et ne sont pas une preuve rétroactive de leur respect.
 
+### Publication et vérifications en ligne du 15 novembre 2026
+
+GitHub Pages publie `main`, dossier racine, en HTTPS. Le [premier déploiement](https://github.com/EleonoreDeLuca/mastermind/actions/runs/43717386943), issu de `8a1d0ee`, est terminé avec succès. Le jeu v1.0.0 n’a pas changé ; les ajouts de documentation suivants ne changent pas ses fichiers. Ces contrôles ont été effectués par Codex sur ordinateur Windows, avec Microsoft Edge ; ce ne sont ni l’essai smartphone de l’étudiante ni les tests de l’enseignant.
+
+| Action sur la version publiée | Attendu | Observé |
+| --- | --- | --- |
+| Ouvrir l’[adresse publique](https://eleonoredeluca.github.io/mastermind/) | Page accessible sans compte, jeu affiché | Réponse HTTP 200, titre et interface du jeu visibles |
+| Ouvrir les [contrôles de la page standard](https://eleonoredeluca.github.io/mastermind/tests/browser.html) | Les 18 contrôles passent sur le vrai jeu publié | 18/18 réussis, 0 échec : API conditionnelle, état initial, propositions, refus, copies, victoire/défaite et échanges API/écran |
+| Ouvrir les [contrôles du fichier autonome](https://eleonoredeluca.github.io/mastermind/tests/browser.html?standalone=1) | Même comportement que la page standard | 18/18 réussis, 0 échec ; cadre du jeu chargé depuis `Code-secret-Mastermind.html?test=1` |
+| Depuis le jeu, choisir rouge, bleu, vert ; tenter une validation ; ajouter jaune et valider | Indicateur 0 → 3 → 4 → 0 sur 4 ; refus à trois couleurs sans essai consommé ; un essai et une ligne après validation complète | Conforme : message « Choisissez une couleur pour chacun des quatre pions. », compteur à 0 après refus ; puis compteur à 1 et ligne rouge–bleu–vert–jaune conservée. Touches 2, 3 et 4 également utilisées. Le code aléatoire est inconnu : les indices 0 bien placée/1 mal placée observés ne constituent pas à eux seuls une vérification du score |
+| Récupérer le [fichier autonome publié](https://eleonoredeluca.github.io/mastermind/Code-secret-Mastermind.html) via HTTP | Même fichier que la source distribuée | SHA-256 identique : `43104a517ef1d2956d0e7e0986ad5ba41438743d033acf14e058451ba9f64941`. Le clic du lien de téléchargement dans le navigateur et l’ouverture hors ligne restent à confirmer séparément |
+
 ## 4. Limites, questions et remises
 
-- **GitHub Pages :** non publié à la dernière vérification du projet ; aucune URL de jeu en ligne validée. Activer Settings → Pages → Deploy from a branch → `main` → `/ (root)`, puis vérifier la version publiée, l’API et les actions dans les deux sens. Les chemins sont relatifs, compatibles avec un sous-dossier de dépôt. L’outil enseignant n’a pas été exécuté.
+- **GitHub Pages :** [site publié](https://eleonoredeluca.github.io/mastermind/) et API vérifiés le 15 novembre sur le même jeu, dans les deux sens. Configuration : Settings → Pages → Deploy from a branch → `main` → `/ (root)`. Après une modification, attendre le déploiement et vérifier la nouvelle version. Les chemins sont relatifs, compatibles avec un sous-dossier de dépôt. L’outil enseignant n’a pas été exécuté.
 - **Smartphone réel :** non réalisé. Appareil et navigateur : à renseigner ; résultat : à observer. Essai prévu : sélectionner et modifier quatre couleurs au toucher, valider, lire les indices et l’historique, recommencer. La simulation mobile ne remplace pas cet essai.
-- **Essai personnel complémentaire :** choisir exactement trois pions ; attendu : indicateur 3 sur 4 et refus de validation sans essai consommé. Puis ajouter le quatrième : attendu 4 sur 4, validation possible et retour à 0 sur 4. Résultat et appareil à renseigner après observation ; ce scénario précis n’est pas revendiqué comme déjà vérifié.
+- **Essai personnel complémentaire :** le scénario trois puis quatre pions est désormais vérifié par Codex sur Edge pour ordinateur (tableau ci-dessus). L’étudiante peut le refaire sur son smartphone et communiquer ses propres observations ; elles n’ont pas encore été recueillies.
 - **Retour sur le jeu d’un camarade :** à réaliser et résumer ici. **Capsule individuelle de 4 à 5 minutes :** à enregistrer par l’étudiante avec son écran et sa voix ; montrer une règle, un test, la correction, un choix expliqué et une limite réelle. La vidéo reste sur Cyberlearn.
 - **J1, 20 novembre 2026 :** poser le tag `jalon-1` sur la version remise et déposer `jalon1_nomdefamille.docx` avec liens du dépôt et du site, et tag ; pas de vidéo. **J2, 18 décembre 2026 :** tag `final`, `jalon2_nomdefamille.docx` avec ces mêmes éléments et vidéo séparée. Tags et Word de remise non créés à ce stade ; vérifier les heures sur Cyberlearn.
 - Les extensions (robot de résolution, PWA, etc.) ne sont pas réalisées ; aucun bonus n’est requis pour cette version. Aucun compte ni classement en ligne n’est prévu. La validation finale appartient à l’enseignant ; les tests réussis ne garantissent pas l’absence de défaut.
