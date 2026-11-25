@@ -1,6 +1,6 @@
 # Code secret — Mastermind
 
-Jeu solo réalisé avec Codex pour le séminaire sur les technologies émergentes, HEG-Genève. **Jeu v1.0.0**, créé le 11 novembre 2026 ; documentation complétée le **15 novembre 2026**.
+Jeu solo réalisé avec Codex pour le séminaire sur les technologies émergentes, HEG-Genève. **Jeu v1.1.0**, créé le 11 novembre 2026 ; installation PWA ajoutée le **25 novembre 2026**. La version du Jalon 1 reste conservée par le tag `jalon-1`.
 
 - [Dépôt GitHub](https://github.com/EleonoreDeLuca/mastermind) · [Télécharger le projet ZIP](https://github.com/EleonoreDeLuca/mastermind/archive/refs/heads/main.zip).
 - **[Jouer en ligne](https://eleonoredeluca.github.io/mastermind/)** · [Accès à l’API de test](https://eleonoredeluca.github.io/mastermind/?test=1). Publication GitHub Pages activée et vérifiée le **15 novembre 2026**. Le dépôt de code et le site jouable sont deux adresses différentes.
@@ -20,20 +20,36 @@ Compter d’abord les couleurs à la bonne position, puis les couleurs présente
 
 L’étudiante a fourni les règles, les documents de référence et demandé la création puis l’envoi sur GitHub. Codex a proposé et réalisé l’interface, le moteur, les tests et la documentation. **Décision de conception proposée par Codex :** utiliser un seul moteur pour l’écran et l’API afin d’éviter deux parties divergentes. Les noms et lettres rendent les couleurs identifiables sans dépendre de leur teinte. L’étudiante doit encore reformuler personnellement les choix qu’elle retient et leurs raisons pour sa capsule ; ce texte ne prétend pas démontrer à lui seul sa compréhension.
 
-Le jeu est entièrement exécuté dans le navigateur, sans compte, données personnelles, paiement, serveur applicatif, service d’IA ni clé d’accès. Le code secret est privé dans le moteur et absent des états retournés. Aucun enregistrement persistant : recharger la page recommence le jeu. Le fichier autonome permet de jouer hors connexion après récupération ; il ne constitue pas une PWA installable.
+Le jeu est entièrement exécuté dans le navigateur, sans compte, données personnelles, paiement, serveur applicatif, service d’IA ni clé d’accès. Le code secret est privé dans le moteur et absent des états retournés. La partie n’est pas enregistrée : recharger la page recommence le jeu. Depuis v1.1.0, les fichiers du jeu peuvent être conservés sur l’appareil pour la PWA hors ligne. Le fichier HTML autonome reste une autre façon de jouer hors connexion, sans installation.
 
 | Fichier | Rôle |
 | --- | --- |
 | `index.html`, `style.css`, `icon.svg` | Page, présentation et icône |
 | `game.js` | Règles, comptage, validation et état de la partie |
 | `app.js` | Commandes, affichage et API utilisant ce même moteur |
+| `manifest.webmanifest`, `pwa.js`, `sw.js` | Installation, disponibilité hors ligne et cache des fichiers du jeu |
+| `icons/`, `qr-code.png` | Icônes d’installation adaptées de `icon.svg` et QR vers l’adresse publique |
 | `Code-secret-Mastermind.html` | Copie autonome générée, téléchargeable depuis le pied de page du jeu |
 | `build.cjs` | Génération de cette copie avec `node build.cjs` |
 | `tests/game.test.cjs` | Tests reproductibles du moteur avec Node.js |
 | `tests/browser.html`, `tests/browser.js` | Contrôles de l’API et de son lien avec la véritable interface |
+| `tests/pwa-browser.cjs` | Vérifications complémentaires dans Edge : réseau coupé, cache et mises à jour |
 | `AGENTS.md` | Consignes de travail pour Codex, ajoutées le 15 novembre 2026 |
 
 Après une modification du jeu, tester le comportement concerné et régénérer le fichier autonome. Aucun paquet tiers à installer. Pour le moteur : `node --test tests/game.test.cjs`. Pour l’intégration : servir le dossier avec un serveur de fichiers statiques, ouvrir `tests/browser.html`, puis `tests/browser.html?standalone=1` pour la copie autonome. Ce serveur de vérification n’est pas nécessaire pour jouer au fichier téléchargé.
+
+### Installation sur iPhone et accès par QR code
+
+1. Scanner le [QR code](qr-code.png) ou ouvrir [le jeu](https://eleonoredeluca.github.io/mastermind/) dans **Safari**, avec Internet.
+2. Choisir **Partager → Sur l’écran d’accueil → Ajouter**. Activer « Ouvrir comme app web » si cette option apparaît. L’icône reprend les quatre pions du jeu.
+3. Ouvrir **Code secret** depuis sa nouvelle icône, avec Internet. Déplier **Installer et jouer hors ligne** et attendre **Jeu prêt hors ligne sur cet appareil**.
+4. Pour vérifier sur l’iPhone : fermer le jeu, activer le mode avion (Wi-Fi également coupé), rouvrir l’icône, choisir quatre couleurs et valider. Attendu : jeu affiché, un essai et les indices visibles. Cet essai réel reste à réaliser pour la PWA v1.1.0.
+
+Le QR contient uniquement `https://eleonoredeluca.github.io/mastermind/`, sans suivi ni service externe ; il ouvre le site et n’installe rien tout seul. Instructions Apple : [installer un site depuis Safari](https://support.apple.com/en-az/guide/iphone/iphea86e5236/26/ios/26).
+
+La première préparation demande Internet. Le navigateur peut retirer les fichiers hors ligne, notamment après effacement des données du site ; rouvrir alors avec Internet. Aucune sauvegarde de partie n’est ajoutée. Les fichiers sont installés ensemble ; une mise à jour attend la fermeture de toutes les fenêtres de cette PWA avant activation et ne recharge pas une partie en cours. Une connexion est nécessaire pour récupérer les nouvelles versions.
+
+Pour maintenir le cache : incrémenter `CACHE_NAME` dans `sw.js` à chaque modification d’un fichier de `APP_FILES`, puis exécuter `node build.cjs` avant publication. Les chemins sont relatifs au dossier du jeu ; seul son propre cache est nettoyé. Le worker ne stocke aucune partie et ne réécrit pas les paramètres de l’URL : le mode `?test=1` conserve son état initial et son API 0.2.
 
 ### API commune 0.2
 
@@ -97,13 +113,34 @@ GitHub Pages publie `main`, dossier racine, en HTTPS. Le [premier déploiement](
 | Depuis le jeu, choisir rouge, bleu, vert ; tenter une validation ; ajouter jaune et valider | Indicateur 0 → 3 → 4 → 0 sur 4 ; refus à trois couleurs sans essai consommé ; un essai et une ligne après validation complète | Conforme : message « Choisissez une couleur pour chacun des quatre pions. », compteur à 0 après refus ; puis compteur à 1 et ligne rouge–bleu–vert–jaune conservée. Touches 2, 3 et 4 également utilisées. Le code aléatoire est inconnu : les indices 0 bien placée/1 mal placée observés ne constituent pas à eux seuls une vérification du score |
 | Récupérer le [fichier autonome publié](https://eleonoredeluca.github.io/mastermind/Code-secret-Mastermind.html) via HTTP | Même fichier que la source distribuée | SHA-256 identique : `43104a517ef1d2956d0e7e0986ad5ba41438743d033acf14e058451ba9f64941`. Le clic du lien de téléchargement dans le navigateur et l’ouverture hors ligne restent à confirmer séparément |
 
+### Ajout PWA du 25 novembre 2026 — v1.1.0
+
+Demande de l’étudiante : conserver le jeu en ligne et ajouter le jeu hors ligne, l’installation sur iPhone avec icône et un accès par QR. L’énoncé local autorise ces extensions facultatives. Réalisation par Codex : manifeste, cache du jeu, aide d’installation et icônes PNG issues du dessin existant. `game.js` et `app.js` ne sont pas modifiés ; aucun paquet ni service n’est ajouté au jeu. Le fichier autonome est régénéré par `node build.cjs`. Le tag `jalon-1`, confirmé localement et sur GitHub sur `cf12794`, n’est pas déplacé.
+
+Vérifications du 25 novembre, par Codex sous Windows avec Node.js 24.22.3 et Edge sans interface, via HTTP local dans `/mastermind/` (Playwright fourni par l’environnement, utilisé seulement pour les contrôles) :
+
+| Action | Attendu | Obtenu |
+| --- | --- | --- |
+| Exécuter `node --test tests/game.test.cjs` | Règles et API inchangées | Vérifié : 8 groupes réussis, dont 1 679 616 couples de codes ; 0 échec |
+| Ouvrir `tests/browser.html`, puis `?standalone=1` | Interface et API toujours cohérentes | Vérifié : 18/18 dans chaque version, 0 échec |
+| Charger le jeu, attendre la préparation, couper le réseau puis rouvrir avec `?test=1` | Même jeu disponible hors ligne ; API initialement `not-started` | Vérifié : secret R R B V, proposition R B R V → 2/2 et 1 essai ; victoire via les boutons ensuite ; rechargement → `not-started` |
+| Ouvrir sans paramètre, réseau coupé, et jouer avec boutons et clavier | API absente ; proposition et indices visibles | Vérifié : un essai affiché ; fichier autonome également récupérable hors ligne |
+| Ouvrir le fichier autonome directement, réseau coupé | Aucune ressource PWA externe nécessaire ; partie valide | Vérifié : API initialement `not-started`, victoire après proposition exacte ; scripts et icônes intégrés, aucun manifeste externe |
+| Simuler une nouvelle version pendant une partie | Mise à jour en attente, sans interrompre la partie ; activation après fermeture | Vérifié : essai conservé, message de mise à jour ; ancien cache supprimé après fermeture, cache témoin d’un autre projet conservé |
+| Afficher l’aide et le QR à 320, 390 et 1120 px | Aucun débordement horizontal | Vérifié : pas de débordement ; mise en page à 390 px inspectée visuellement. Simulation sur ordinateur, pas essai iPhone |
+| Décoder le PNG du QR avec un autre outil | Adresse publique exacte | Vérifié avec jsQR 1.4.0 : `https://eleonoredeluca.github.io/mastermind/` ; décodage indépendant de sa génération |
+
+Le test automatique complémentaire est conservé dans `tests/pwa-browser.cjs` : `node tests/pwa-browser.cjs` dans un environnement disposant de Playwright et de Microsoft Edge sous Windows. Il démarre son serveur local, coupe réellement le réseau du contexte navigateur et simule une mise à jour ; les captures restent dans `dist/`, exclu de Git. Définir `PWA_URL` vers l’adresse publique permet les mêmes contrôles sur le site publié, sans simulation de déploiement. Le jeu lui-même ne dépend pas de Playwright ni du décodeur QR. Le contrôle d’installation Chromium signale uniquement le contexte privé du test ; ce résultat ne constitue pas une installation réelle, ni une validation Safari/iPhone.
+
+**À réaliser sur l’iPhone de l’étudiante :** scanner le QR avec l’appareil photo, installer l’icône via Safari, préparer le jeu depuis cette icône puis le rouvrir et jouer en mode avion. L’essai Safari du 15 novembre ci-dessous concernait v1.0.0 en ligne et ne prouve pas ces fonctions nouvelles. L’outil de test enseignant n’a pas été exécuté. Publication et contrôles publics de cette nouvelle version : à consigner après déploiement.
+
 ## 4. Limites, questions et remises
 
 - **GitHub Pages :** [site publié](https://eleonoredeluca.github.io/mastermind/) et API vérifiés le 15 novembre sur le même jeu, dans les deux sens. Configuration : Settings → Pages → Deploy from a branch → `main` → `/ (root)`. Après une modification, attendre le déploiement et vérifier la nouvelle version. Les chemins sont relatifs, compatibles avec un sous-dossier de dépôt. L’outil enseignant n’a pas été exécuté.
 - **Smartphone réel — essai réalisé le 15 novembre 2026 par l’étudiante :** iPhone SE (génération non précisée), iOS 26.6.1 (version déclarée), Safari. Jeu v1.0.0 sur [le site publié](https://eleonoredeluca.github.io/mastermind/), version du dépôt `dea4303` avant ajout de ce compte rendu. Scénario proposé : choisir trois couleurs et tenter de valider (attendu : refus expliqué, aucun essai consommé) ; ajouter la quatrième couleur, modifier un choix puis valider (attendu : un essai, proposition et indices visibles) ; lancer une nouvelle partie (attendu : compteur et historique remis à zéro) ; vérifier la lisibilité et la facilité d’utilisation au toucher. **Résultat obtenu : l’étudiante confirme que le test est bon, sans problème signalé.** Il s’agit de son retour global sur ce scénario, pas d’un relevé séparé de chaque étape ni d’un test observé à distance par Codex. Aucune capture n’est exigée pour cet essai simple.
 - **Essai personnel complémentaire :** le scénario trois puis quatre pions est vérifié par Codex sur Edge pour ordinateur (tableau ci-dessus) et fait partie de l’essai smartphone dont l’étudiante a confirmé la réussite globale. Les observations sur ordinateur et le retour de l’étudiante restent deux preuves distinctes.
 - **Retour sur le jeu d’un camarade :** à réaliser et résumer ici. **Capsule individuelle de 4 à 5 minutes :** à enregistrer par l’étudiante avec son écran et sa voix ; montrer une règle, un test, la correction, un choix expliqué et une limite réelle. La vidéo reste sur Cyberlearn.
-- **J1, 20 novembre 2026 :** poser le tag `jalon-1` sur la version remise et déposer `jalon1_nomdefamille.docx` avec liens du dépôt et du site, et tag ; pas de vidéo. **J2, 18 décembre 2026 :** tag `final`, `jalon2_nomdefamille.docx` avec ces mêmes éléments et vidéo séparée. Tags et Word de remise non créés à ce stade ; vérifier les heures sur Cyberlearn.
-- Les extensions (robot de résolution, PWA, etc.) ne sont pas réalisées ; aucun bonus n’est requis pour cette version. Aucun compte ni classement en ligne n’est prévu. La validation finale appartient à l’enseignant ; les tests réussis ne garantissent pas l’absence de défaut.
+- **J1, 20 novembre 2026 :** tag `jalon-1` confirmé le 25 novembre sur `cf12794` ; le dépôt du document `jalon1_nomdefamille.docx` sur Cyberlearn n’est pas vérifié ici. **J2, 18 décembre 2026 :** tag `final`, `jalon2_nomdefamille.docx` avec liens du dépôt et du site et vidéo séparée restent à réaliser ; vérifier les heures sur Cyberlearn.
+- La PWA est ajoutée à la demande de l’étudiante le 25 novembre ; le robot de résolution n’est pas réalisé. Aucun bonus n’est requis, aucun compte ni classement en ligne n’est prévu. La validation finale appartient à l’enseignant ; les tests réussis ne garantissent pas l’absence de défaut.
 
 Le dépôt public contient le jeu, ses tests et sa documentation. Le dossier local `documents-reference/` et les archives locales `dist/` sont exclus par `.gitignore`. Ne pas publier les conversations, les fichiers personnels, les supports de cours, les accès ou la capsule.

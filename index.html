@@ -7,15 +7,20 @@
   <meta name="description" content="Quatre couleurs secrètes, dix essais. Un jeu de logique accessible, sans compte et sans service externe.">
   <title>Code secret · Mastermind</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" sizes="180x180">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Code secret">
   <link rel="stylesheet" href="style.css">
   <script src="game.js" defer></script>
   <script src="app.js" defer></script>
+  <script src="pwa.js" defer></script>
 </head>
 <body>
   <main class="shell">
     <header class="masthead">
       <span class="brand"><span class="brand-mark" aria-hidden="true">●<br>● ●</span>CODE SECRET</span>
-      <span class="edition">JEU DE LOGIQUE <span aria-hidden="true">/</span> v1.0.0</span>
+      <span class="edition">JEU DE LOGIQUE <span aria-hidden="true">/</span> v1.1.0</span>
     </header>
     <section class="intro" aria-labelledby="title">
       <p class="eyebrow">QUATRE COULEURS. À VOUS DE JOUER.</p>
@@ -58,6 +63,22 @@
             <p>Vous pouvez modifier les quatre pions avant validation. Le code reste caché, même à la fin.</p>
           </div>
         </details>
+        <!-- PWA:START -->
+        <details class="rules install-help">
+          <summary>Installer et jouer hors ligne <span aria-hidden="true">+</span></summary>
+          <div class="rules-content">
+            <p>Sur iPhone, ouvrez ce jeu dans <strong>Safari</strong>, puis touchez <strong>Partager → Sur l’écran d’accueil → Ajouter</strong>. Si l’option « Ouvrir comme app web » apparaît, activez-la.</p>
+            <p>Ouvrez ensuite l’icône <strong>Code secret</strong> avec Internet et attendez la confirmation ci-dessous avant de jouer hors ligne.</p>
+            <p id="offline-status" role="status" aria-live="polite">Préparation du jeu hors ligne…</p>
+            <p id="update-status" hidden>Une mise à jour est prête. Pour l’utiliser, fermez toutes les fenêtres du jeu, puis rouvrez-le avec Internet. Votre partie actuelle peut continuer.</p>
+            <p>Recharger ou fermer le jeu recommence la partie. Le navigateur peut effacer les fichiers hors ligne : dans ce cas, ouvrez à nouveau le jeu avec Internet.</p>
+            <figure class="install-qr">
+              <img src="qr-code.png" alt="QR code pour ouvrir Code secret sur un autre appareil" width="180" height="180" loading="lazy">
+              <figcaption>Scannez pour ouvrir le jeu sur votre iPhone.<br><a href="qr-code.png" download="Code-secret-QR.png">Télécharger le QR code</a></figcaption>
+            </figure>
+          </div>
+        </details>
+        <!-- PWA:END -->
       </aside>
     </div>
     <footer><a href="Code-secret-Mastermind.html" download>Télécharger le jeu</a><span>Sans compte · Sans IA pendant la partie</span></footer>
